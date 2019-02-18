@@ -1,5 +1,5 @@
 #####################################################################################
-# $Id: 98_serviced.pm 15511 2017-11-27 22:42:14Z DeeSPe $
+# $Id: 98_serviced.pm 15533 2017-12-01 11:40:09Z DeeSPe $
 #
 # Usage
 # 
@@ -16,8 +16,7 @@ use Blocking;
 use Time::HiRes;
 use vars qw{%defs};
 
-my $servicedVersion = "1.2.3";
-my $serviced_shuttime;
+my $servicedVersion = "1.2.4";
 
 sub serviced_shutdownwait($);
 
@@ -366,11 +365,10 @@ sub serviced_ExecFinished($)
 sub serviced_ExecAborted($)
 {
   my ($hash,$cause) = @_;
+  $cause = "BlockingCall was aborted due to 301 seconds timeout" if (!$cause);
   my $name = $hash->{NAME};
   delete $hash->{helper}{RUNNING_PID};
-  my $er = "BlockingCall was aborted due to 301 seconds timeout";
-  $cause = $cause ? $cause : $er;
-  Log3 $name,2,"$name: BlockingCall $hash->{HELPER}{RUNNING_PID}{fn} $cause";
+  Log3 $name,2,"$name: BlockingCall aborted: $cause";
   readingsBeginUpdate($hash);
   readingsBulkUpdate($hash,"state","error");
   readingsBulkUpdate($hash,"error",$cause);
@@ -399,7 +397,7 @@ sub serviced_Shutdown($)
   $autostop = $autostop > 300 ? 300 : $autostop;
   if ($autostop)
   {
-    $serviced_shuttime = time;
+    $hash->{SHUTDOWNTIME} = time;
     Log3 $name,3,"$name: stopping service \"$hash->{SERVICENAME}\" due to shutdown";
     my $lockfile = AttrVal("global","modpath",".")."/log/".$name."_shut.lock";
     my $er = FileWrite($lockfile,"controlfile shutdown sequence");
@@ -429,7 +427,7 @@ sub serviced_shutdownwait($)
   if (!$er)
   {
     sleep 1;
-    if (time > $serviced_shuttime + $autostop)
+    if (time > $hash->{SHUTDOWNTIME} + $autostop)
     {
       $er = FileDelete($lockfile);
       if ($er)
