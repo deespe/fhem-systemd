@@ -1,5 +1,5 @@
 #####################################################################################
-# $Id: 98_serviced.pm 20517 2019-11-16 10:40:37Z DeeSPe $
+# $Id: 98_serviced.pm 20536 2019-11-18 20:22:13Z DeeSPe $
 #
 # Usage
 # 
@@ -149,7 +149,7 @@ sub serviced_Set($@)
     if ($cmd eq "start" && ReadingsVal($name,"state","") =~ /^running|starting|failed$/);
   my $service = $hash->{SERVICENAME};
   my $login = AttrVal($name,"serviceLogin","");
-  my $sudo = AttrNum($name,"serviceSudo",1) || $login =~ /^root@/ ? "sudo " : "";
+  my $sudo = AttrNum($name,"serviceSudo",1) && $login !~ /^root@/ ? "sudo " : "";
   my $line = AttrVal($name,"serviceStatusLine",3);
   my $com;
   $com .= "ssh $login '" if ($login);
