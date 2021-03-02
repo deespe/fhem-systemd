@@ -1,3 +1,5 @@
+v1.2.7
+  - get first status only if $init_done
 v1.2.6
   - add additional argument and attribute to declare the ssh port if not the default is used
   - fix retrieve status on define
