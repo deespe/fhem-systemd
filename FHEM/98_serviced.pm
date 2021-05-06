@@ -1,5 +1,5 @@
 #####################################################################################
-# $Id: 98_serviced.pm 23884 2021-03-03 19:12:42Z DeeSPe $
+# $Id: 98_serviced.pm 24390 2021-05-06 22:25:17Z DeeSPe $
 #
 # Usage
 # 
@@ -100,16 +100,10 @@ sub serviced_Notify($$)
   return if (!$events);
   if ($devname eq "global" && grep /^INITIALIZED$/,@{$events})
   {
-    my $interval = AttrNum($name,"serviceStatusInterval",0);
-    if (AttrNum($name,"serviceGetStatusOnInit",1) && !$interval)
+    if (AttrNum($name,"serviceGetStatusOnInit",1) || AttrNum($name,"serviceStatusInterval",0))
     {
-      Log3 $name,3,"$name: get status of service \"$hash->{SERVICENAME}\" due to startup";
-      serviced_Set($hash,$name,"status");
-    }
-    elsif ($interval)
-    {
-      Log3 $name,4,"$name: automatic start of status interval (".$interval."sec)";
-      InternalTimer(gettimeofday() + $interval,"serviced_GetUpdate",$hash);
+      Log3 $name,4,"$name: get status of service \"$hash->{SERVICENAME}\" due to startup and/or interval";
+      serviced_GetUpdate($hash);
     }
     my $delay = AttrVal($name,"serviceAutostart",0);
     $delay = $delay > 300 ? 300 : $delay;

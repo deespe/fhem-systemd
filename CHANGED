@@ -1,3 +1,7 @@
+v1.2.8
+  - fix interval not starting after FHEM start
+  - add attr disabledForIntervals
+  - adapt new help format for commandref
 v1.2.7
   - get first status only if $init_done
 v1.2.6
