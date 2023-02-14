@@ -1,5 +1,5 @@
 #####################################################################################
-# $Id: 98_serviced.pm 27225 2023-02-14 16:56:07Z DeeSPe $
+# $Id: 98_serviced.pm 27227 2023-02-14 20:00:33Z DeeSPe $
 #
 # Usage
 # 
@@ -402,8 +402,8 @@ sub serviced_Shutdown($)
 {  
   my ($hash) = @_;
   my $name = $hash->{NAME};
-  my $autostop = AttrNum($name,"serviceAutostop",0);
   return if (IsDisabled($name));
+  my $autostop = AttrNum($name,"serviceAutostop",0);
   $autostop = $autostop > 300 ? 300 : $autostop;
   if ($autostop)
   {
