@@ -403,6 +403,7 @@ sub serviced_Shutdown($)
   my ($hash) = @_;
   my $name = $hash->{NAME};
   my $autostop = AttrNum($name,"serviceAutostop",0);
+  return if (IsDisabled($name));
   $autostop = $autostop > 300 ? 300 : $autostop;
   if ($autostop)
   {
