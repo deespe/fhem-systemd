@@ -1,5 +1,5 @@
 #####################################################################################
-# $Id: 98_serviced.pm 24390 2021-05-06 22:25:17Z DeeSPe $
+# $Id: 98_serviced.pm 27225 2023-02-14 16:56:07Z DeeSPe $
 #
 # Usage
 # 
@@ -16,7 +16,7 @@ use Blocking;
 use Time::HiRes;
 use vars qw{%defs};
 
-my $servicedVersion = "1.2.8";
+my $servicedVersion = "1.2.9";
 
 sub serviced_shutdownwait($);
 
